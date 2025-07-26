@@ -2,14 +2,18 @@ import 'package:flutter/material.dart';
 
 class TemperatureInput extends StatelessWidget {
   final TextEditingController controller;
-  final String errorMessage;
-  final void Function(String) onChanged;
+  final String label;
+  final String selectedUnit;
+  final List<String> units;
+  final void Function(String?) onUnitChanged;
 
   const TemperatureInput({
     super.key,
     required this.controller,
-    required this.errorMessage,
-    required this.onChanged,
+    required this.label,
+    required this.selectedUnit,
+    required this.units,
+    required this.onUnitChanged,
   });
 
   @override
@@ -17,30 +21,39 @@ class TemperatureInput extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Enter Temperature',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-            color: Colors.black,
-          ),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          onChanged: onChanged,
-          decoration: InputDecoration(
-            hintText: 'e.g., 36.5',
-            errorText: errorMessage.isNotEmpty ? errorMessage : null,
-            filled: true,
-            fillColor: Colors.white,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide.none,
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  hintText: 'Enter value',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                ),
+              ),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          ),
+            const SizedBox(width: 12),
+            DropdownButton<String>(
+              value: selectedUnit,
+              items: units.map((unit) {
+                return DropdownMenuItem(
+                  value: unit,
+                  child: Text(unit),
+                );
+              }).toList(),
+              onChanged: onUnitChanged,
+            ),
+          ],
         ),
       ],
     );
